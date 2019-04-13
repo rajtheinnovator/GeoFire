@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "879980054107",
+    "firebase_url": "https://geofence-abhi.firebaseio.com",
+    "project_id": "geofence-abhi",
+    "storage_bucket": "geofence-abhi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879980054107:android:9f5548828dd9ac0b",
+        "android_client_info": {
+          "package_name": "me.abhishekraj.geofire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879980054107-04qs8on7n8e6a30kl3m4f2sltqed9103.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.abhishekraj.geofire",
+            "certificate_hash": "51ff0c33b3412257d16b6ec482515b36b3c56a73"
+          }
+        },
+        {
+          "client_id": "879980054107-rr078ag4rg73e8iphhe7jkd2faq4hkmj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI2mdshgLuy37Q5zHf3HHM4E-d2VSyqqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879980054107-rr078ag4rg73e8iphhe7jkd2faq4hkmj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
