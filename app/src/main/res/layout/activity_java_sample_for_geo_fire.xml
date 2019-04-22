@@ -1,9 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".JavaSampleForGeoFire">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/container_current_location"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="12.933192, 77.612153" />
+
+    <LinearLayout
+        android:id="@+id/container_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_view_current_location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:text="Current Location: " />
+
+        <TextView
+            android:id="@+id/text_view_current_location_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Value" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_distance_from_test_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container_current_location"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_view_distance_from_test_location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:text="Distance from test location: " />
+
+        <TextView
+            android:id="@+id/text_view_distance_from_test_location_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Value" />
+    </LinearLayout>
+
+</RelativeLayout>
