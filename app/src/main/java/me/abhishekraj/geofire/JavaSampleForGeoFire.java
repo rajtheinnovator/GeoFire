@@ -3,7 +3,6 @@ package me.abhishekraj.geofire;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -84,7 +82,7 @@ public class JavaSampleForGeoFire extends AppCompatActivity implements GeoQueryE
             public void onLocationChanged(Location location) {
                 currentLocationTextView.setText("onLocationChanged, location is: " + location.getLatitude() + ", " + location.getLongitude());
                 currentLocation = location;
-                doGeoFireOperation(location);
+                //doGeoFireOperation(location);
             }
 
             @Override
@@ -103,24 +101,8 @@ public class JavaSampleForGeoFire extends AppCompatActivity implements GeoQueryE
             }
         };
         permissionHandle();
-        // creates a new query around @param locationUnderTest with a radius of 0.01 kilometers
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(locationUnderTest.getLatitude(),
-                locationUnderTest.getLongitude()), 0.5);
-        geoQuery.addGeoQueryEventListener(geoQueryEventListener);
 
 
-    }
-
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i("my_tag", "isMyServiceRunning true");
-                return true;
-            }
-        }
-        Log.i("my_tag", "isMyServiceRunning false");
-        return false;
     }
 
     private void permissionHandle() {
