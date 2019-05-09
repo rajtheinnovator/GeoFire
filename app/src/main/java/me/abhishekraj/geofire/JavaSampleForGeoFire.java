@@ -3,6 +3,7 @@ package me.abhishekraj.geofire;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -106,6 +107,20 @@ public class JavaSampleForGeoFire extends AppCompatActivity implements GeoQueryE
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(locationUnderTest.getLatitude(),
                 locationUnderTest.getLongitude()), 0.5);
         geoQuery.addGeoQueryEventListener(geoQueryEventListener);
+
+
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i("my_tag", "isMyServiceRunning true");
+                return true;
+            }
+        }
+        Log.i("my_tag", "isMyServiceRunning false");
+        return false;
     }
 
     private void permissionHandle() {
@@ -113,6 +128,7 @@ public class JavaSampleForGeoFire extends AppCompatActivity implements GeoQueryE
         if (DeviceSdkVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (checkIfLocationPermissionGranted()) {
                 getCurrentLocationOfUser();
+                sendBroadcastForLocationTracking();
             } else {
                 getUsersLocationPermission();
             }
@@ -123,6 +139,31 @@ public class JavaSampleForGeoFire extends AppCompatActivity implements GeoQueryE
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 LOCATION_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    sendBroadcastForLocationTracking();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
+    }
+
+    private void sendBroadcastForLocationTracking() {
+        Intent broadcastIntent = new Intent(this, GpsTrackerAlarm.class);
+        sendBroadcast(broadcastIntent);
     }
 
     @SuppressLint("MissingPermission")
