@@ -49,10 +49,15 @@ public class GpsTrackerService extends Service implements GeoQueryEventListener 
 
     private FusedLocationProviderClient fusedLocationClient;
 
+    NotificationCompat.Builder builder;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         getCurrentLocationOfUser();
+        if (Build.VERSION.SDK_INT > O) {
+            startForeground(123, builder.build());
+        }
         return START_STICKY;
     }
 

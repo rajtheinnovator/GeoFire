@@ -43,7 +43,11 @@ public class GpsTrackerAlarm extends BroadcastReceiver {
         Runnable periodicUpdate = new Runnable() {
             @Override
             public void run() {
-                context.startService(new Intent(context, GpsTrackerService.class));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, GpsTrackerService.class));
+                } else {
+                    context.startService(new Intent(context, GpsTrackerService.class));
+                }
             }
         };
 

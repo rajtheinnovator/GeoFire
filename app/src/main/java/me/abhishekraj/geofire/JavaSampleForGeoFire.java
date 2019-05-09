@@ -178,6 +178,7 @@ public class JavaSampleForGeoFire extends AppCompatActivity {
                     Toast.makeText(this, "App can't work properly without location permission", Toast.LENGTH_SHORT).show();
                     finish();
                 }
+
                 return;
             }
         }
