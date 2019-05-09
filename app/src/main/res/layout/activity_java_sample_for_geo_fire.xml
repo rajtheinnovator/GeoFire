@@ -34,7 +34,6 @@
             android:id="@+id/text_view_current_location_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
             tools:text="Value" />
     </LinearLayout>
 

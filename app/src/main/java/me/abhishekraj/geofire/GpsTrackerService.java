@@ -1,5 +1,6 @@
 package me.abhishekraj.geofire;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -18,7 +19,6 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -26,6 +26,7 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,29 +45,34 @@ public class GpsTrackerService extends Service implements GeoQueryEventListener 
     Location currentLocation, locationUnderTest;
     GeoQueryEventListener geoQueryEventListener;
     Context context;
-
-    //handle gps
-    private FusedLocationProviderClient fusedLocationClient;
     private LocationListener locationListener;
+
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.d("my_taggg", "onStartCommand called");
+        getCurrentLocationOfUser();
+        return START_STICKY;
+    }
 
+    @Override
+    public void onCreate() {
+        context = this;
+        locationUnderTest = new Location("Original Location");
+        //TODO: Set location value here, around which you want to monitor enter/exit
+        locationUnderTest.setLatitude(28.646022);
+        locationUnderTest.setLongitude(77.355979);
         databaseReference = FirebaseDatabase.getInstance().getReference("path_geofire");
         geoFire = new GeoFire(databaseReference);
         geoQueryEventListener = this;
         //handle location callback
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = location;
-                doGeoFireOperation(location);
             }
 
             @Override
@@ -88,23 +94,29 @@ public class GpsTrackerService extends Service implements GeoQueryEventListener 
                 locationUnderTest.getLongitude()), 0.05);
         geoQuery.addGeoQueryEventListener(geoQueryEventListener);
 
-        return START_STICKY;
-    }
-
-    @Override
-    public void onCreate() {
-        context = this;
-        Log.d("my_taggg", "GpsTrackerService onCreate called");
-        locationUnderTest = new Location("Original Location");
-        //TODO: Set location value here, around which you want to monitor enter/exit
-        locationUnderTest.setLatitude(28.646022);
-        locationUnderTest.setLongitude(77.355979);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         GpsTrackerAlarm.scheduleExactAlarm(GpsTrackerService.this, (AlarmManager) getSystemService(ALARM_SERVICE));
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocationOfUser() {
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            doGeoFireOperation(location);
+                        }
+                    }
+                });
+
     }
 
     private void doGeoFireOperation(Location location) {
@@ -165,13 +177,11 @@ public class GpsTrackerService extends Service implements GeoQueryEventListener 
     @Override
     public void onKeyEntered(String key, GeoLocation geoLocation) {
         showNotification(key, "Entered");
-        Toast.makeText(this, "entered: " + key, Toast.LENGTH_SHORT).show();
         Log.d("my_tag", String.format("Entered: Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
     }
 
     @Override
     public void onKeyExited(String key) {
-        Toast.makeText(this, "Exited: " + key, Toast.LENGTH_SHORT).show();
         Log.d("my_tag", String.format("Exited: Key %s is no longer in the search area", key));
         showNotification(key, "Exited");
     }
@@ -179,7 +189,6 @@ public class GpsTrackerService extends Service implements GeoQueryEventListener 
     @Override
     public void onKeyMoved(String key, GeoLocation geoLocation) {
         showNotification(key, "Moved");
-        Toast.makeText(this, "Moved: " + key, Toast.LENGTH_SHORT).show();
         Log.d("my_tag", String.format("Moved: Key %s moved within the search area to [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
     }
 

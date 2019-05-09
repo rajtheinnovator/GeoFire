@@ -17,7 +17,6 @@ import android.util.Log;
 
 public class GpsTrackerAlarm extends BroadcastReceiver {
     public static void scheduleExactAlarm(Context context, AlarmManager alarms) {
-        Log.d("my_taggg", "scheduleExactAlarm called");
         Intent i = new Intent(context, GpsTrackerAlarm.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -27,7 +26,6 @@ public class GpsTrackerAlarm extends BroadcastReceiver {
     }
 
     public static void cancelAlarm(Context context, AlarmManager alarms) {
-        Log.d("my_taggg", "cancelAlarm called");
         Intent i = new Intent(context, GpsTrackerAlarm.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
         alarms.cancel(pi);
